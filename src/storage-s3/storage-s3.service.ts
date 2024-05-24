@@ -10,10 +10,10 @@ import { ConfigService } from '@nestjs/config';
 export class StorageS3Service {
   private readonly s3Client = new S3Client({
     region: this.configService.get('AWS_S3_REGION'),
-    /* credentials: {
+    credentials: {
       accessKeyId: this.configService.get('ACCESS_KEY_ID'),
       secretAccessKey: this.configService.get('SECRET_ACCESS_KEY'),
-    }, */
+    },
   });
 
   constructor(private readonly configService: ConfigService) {}
