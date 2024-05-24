@@ -6,10 +6,12 @@ import { EnvConfiguration } from './config/env.config';
 import { JoiValidationSchema } from './config/joi.validation';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CustomersModule } from './customers/customers.module';
+import { StorageS3Module } from './storage-s3/storage-s3.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
+      isGlobal: true,
       load: [EnvConfiguration],
       validationSchema: JoiValidationSchema,
     }),
@@ -17,6 +19,7 @@ import { CustomersModule } from './customers/customers.module';
     AuthModule,
     UsersModule,
     CustomersModule,
+    StorageS3Module,
   ],
   controllers: [],
   providers: [],
