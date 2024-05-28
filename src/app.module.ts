@@ -7,6 +7,7 @@ import { JoiValidationSchema } from './config/joi.validation';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CustomersModule } from './customers/customers.module';
 import { StorageS3Module } from './storage-s3/storage-s3.module';
+import { BlogModule } from './blog/blog.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { StorageS3Module } from './storage-s3/storage-s3.module';
     UsersModule,
     CustomersModule,
     StorageS3Module,
+    BlogModule,
   ],
   controllers: [],
   providers: [],
