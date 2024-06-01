@@ -66,12 +66,20 @@ export class BlogService {
 
   async update( id: string, updateBlogDto: UpdateBlogDto, file?: Express.Multer.File ) {
     const blog = await this.blogModel.findById( id );
-
+    let slug;
 
     if ( !blog )
       throw new NotFoundException(`Blog whit id ${ id } not found`);
 
-    let payload = { ...updateBlogDto, slug: updateBlogDto.title.split(' ').join('-').toLowerCase(), image: blog.image };
+    const newSlug = updateBlogDto.title.split(' ').join('-').toLowerCase();
+
+    if (newSlug === blog.slug) {
+      slug = blog.slug;
+    } else {
+      slug = newSlug;
+    }
+
+    let payload = { ...updateBlogDto, slug, image: blog.image };
 
     if ( file ) {
       await this.storageS3Service.removeFileS3( blog.image );
