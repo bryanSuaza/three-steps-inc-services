@@ -96,11 +96,11 @@ export class BlogService {
 
     try {
       // Actualizamos
-      await this.blogModel.updateOne(payload);
+      const response = await this.blogModel .findByIdAndUpdate(id, { $set: payload }, { new: true }).exec();
 
       return {
         ...blog.toJSON(),
-        ...updateBlogDto,
+        ...response,
       };
       
     } catch ( error ) {
