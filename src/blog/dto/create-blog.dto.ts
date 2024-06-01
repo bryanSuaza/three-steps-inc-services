@@ -18,9 +18,4 @@ export class CreateBlogDto {
   @IsString()
   @IsIn([ 'A', 'I' ])
   status: string;
-
-  @IsString({ each: true })
-  @IsArray()
-  @IsOptional()
-  tags: string[];
 }
