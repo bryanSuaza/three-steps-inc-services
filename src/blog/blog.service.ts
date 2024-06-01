@@ -67,6 +67,7 @@ export class BlogService {
   async update( id: string, updateBlogDto: UpdateBlogDto, file?: Express.Multer.File ) {
     const blog = await this.blogModel.findById( id );
 
+
     if ( !blog )
       throw new NotFoundException(`Blog whit id ${ id } not found`);
 
