@@ -22,16 +22,16 @@ export class Blog extends Document {
     unique: true,
     index: true
   })
-  slug: string
-
-  @Prop({
-    default: [],
-    index: true
-  })
-  tags: string[];
+  slug: string;
 
   @Prop({ index: true })
   image: string;
+
+  @Prop()
+  createAt: Date;
+
+  @Prop()
+  updatedAt: Date;
 }
 
 export const BlogSchema = SchemaFactory.createForClass(Blog);

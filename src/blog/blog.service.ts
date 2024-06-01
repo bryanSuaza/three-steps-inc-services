@@ -5,17 +5,31 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 import { Blog } from './entities/blog.entity';
 import { CreateBlogDto, UpdateBlogDto } from './dto';
+import { StorageS3Service } from 'src/storage-s3/storage-s3.service';
 
 @Injectable()
 export class BlogService {
   constructor(
     @InjectModel( Blog.name )
     private readonly blogModel: Model<Blog>,
+    private readonly storageS3Service: StorageS3Service
   ) {}
 
-  async create ( createBlogDto: CreateBlogDto ) {    
+  async create ( createBlogDto: CreateBlogDto, file: Express.Multer.File ) {
     try {
-      const blog = await this.blogModel.create(createBlogDto);
+      const fileName = createBlogDto.title.split(' ').join('_');
+      const mimetype = file.mimetype;
+      const extension = file.originalname.split('.').pop();
+      const path = '/blog';
+
+      const urlImage = await this.storageS3Service.uploadFileS3( path, fileName, mimetype, extension, file.buffer );
+      
+      const blog = await this.blogModel.create({
+        ...createBlogDto,
+        slug: createBlogDto.title.split(' ').join('-').toLowerCase(),
+        image: urlImage
+      });
+
       return blog;
       
     } catch ( error ) {
@@ -50,13 +64,50 @@ export class BlogService {
     return blog;
   }
 
-  update(id: number, updateBlogDto: UpdateBlogDto) {
-    return `This action updates a #${id} blog`;
+  async update( id: string, updateBlogDto: UpdateBlogDto, file?: Express.Multer.File ) {
+    const blog = await this.findOne( id );
+
+    if ( !blog )
+      throw new NotFoundException(`Blog whit id ${ id } not found`);
+
+    let payload = { ...updateBlogDto, slug: updateBlogDto.title.split(' ').join('-').toLowerCase(), image: blog.image };
+
+    if ( file ) {
+      await this.storageS3Service.removeFileS3( blog.image );
+
+      const fileName = updateBlogDto.title.split(' ').join('_');
+      const mimetype = file.mimetype;
+      const extension = file.originalname.split('.').pop();
+      const path = '/blog';
+
+      const url = await this.storageS3Service.uploadFileS3( path, fileName, mimetype, extension, file.buffer );
+      
+      payload = { ...payload, image: url }
+    }
+
+    try {
+      // Actualizamos
+      await this.blogModel.updateOne(payload);
+
+      return {
+        ...blog.toJSON(),
+        ...updateBlogDto,
+      };
+      
+    } catch ( error ) {
+      this.handleExceptions( error );
+    }
   }
 
   async remove( id: string ) {
+    const blog = await this.findOne( id );
+
     const { deletedCount } = await this.blogModel.deleteOne({ _id: id });
-    if ( deletedCount === 0 ) throw new BadRequestException(`Blog whit id "${ id }" not found`);
+    
+    if ( deletedCount === 0 )
+      throw new BadRequestException(`Blog whit id "${ id }" not found`);
+    else
+      await this.storageS3Service.removeFileS3(blog.image);
     
     return { success: true };
   }

@@ -5,6 +5,7 @@ import { EnvConfiguration } from 'src/config/env.config';
 
 import { BlogController } from './blog.controller';
 import { BlogService } from './blog.service';
+import { StorageS3Service } from 'src/storage-s3/storage-s3.service';
 import { Blog, BlogSchema } from './entities/blog.entity';
 
 @Module({
@@ -20,6 +21,6 @@ import { Blog, BlogSchema } from './entities/blog.entity';
     ]),
   ],
   controllers: [ BlogController ],
-  providers: [ BlogService ]
+  providers: [ BlogService, StorageS3Service ]
 })
 export class BlogModule {}

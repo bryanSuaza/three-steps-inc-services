@@ -1,17 +1,25 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { ParseMongoIdPipe } from 'src/common/pipe/parse-mongo-id.pipe';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 import { BlogService } from './blog.service';
 import { CreateBlogDto, UpdateBlogDto } from './dto';
+import { fileFilter } from './helpers';
 
 @Controller('blog')
 export class BlogController {
   constructor(private readonly blogService: BlogService) {}
 
   @Post()
-  create( @Body() createBlogDto: CreateBlogDto ) {
-    return this.blogService.create( createBlogDto );
+  @UseInterceptors(FileInterceptor('file', {
+    fileFilter: fileFilter
+  }))
+  create(
+    @Body() createBlogDto: CreateBlogDto,
+    @UploadedFile() file: Express.Multer.File
+  ) {
+    return this.blogService.create( createBlogDto, file );
   }
 
   @Get()
@@ -25,8 +33,15 @@ export class BlogController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto) {
-    return this.blogService.update(+id, updateBlogDto);
+  @UseInterceptors(FileInterceptor('file', {
+    fileFilter: fileFilter
+  }))
+  update(
+    @Body() updateBlogDto: UpdateBlogDto,
+    @Param('id', ParseMongoIdPipe) id: string,
+    @UploadedFile() file: Express.Multer.File
+  ) {
+    return this.blogService.update( id, updateBlogDto, file );
   }
 
   @Delete(':id')
