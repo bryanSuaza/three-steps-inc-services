@@ -100,7 +100,7 @@ export class BlogService {
   }
 
   async remove( id: string ) {
-    const blog = await this.findOne( id );
+    const blog = await this.blogModel.findById( id );
 
     const { deletedCount } = await this.blogModel.deleteOne({ _id: id });
     
