@@ -64,7 +64,7 @@ export class StorageS3Service {
       return true;
     } catch (error) {
       throw new InternalServerErrorException(
-        'Ocurrio una inconsistencia al cargar la imagen',
+        'Ocurrio una inconsistencia al eliminar la imagen',
       );
     }
   }
