@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-@Schema()
+@Schema({ timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } })
 export class Blog extends Document {
   @Prop({ index: true })
   title: string;
@@ -20,18 +20,12 @@ export class Blog extends Document {
 
   @Prop({
     unique: true,
-    index: true
+    index: true,
   })
   slug: string;
 
   @Prop({ index: true })
   image: string;
-
-  @Prop()
-  createAt: Date;
-
-  @Prop()
-  updatedAt: Date;
 }
 
 export const BlogSchema = SchemaFactory.createForClass(Blog);

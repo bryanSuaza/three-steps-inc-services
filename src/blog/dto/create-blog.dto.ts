@@ -1,4 +1,10 @@
-import { IsArray, IsIn, IsOptional, IsString, MinLength } from 'class-validator';
+import {
+  IsArray,
+  IsIn,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
 
 export class CreateBlogDto {
   @IsString()
@@ -16,6 +22,6 @@ export class CreateBlogDto {
   author: string;
 
   @IsString()
-  @IsIn([ 'A', 'I' ])
+  @IsIn(['A', 'I'])
   status: string;
 }

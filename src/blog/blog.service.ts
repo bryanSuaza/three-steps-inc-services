@@ -56,7 +56,7 @@ export class BlogService {
       blog = await this.blogModel.findById( term );
 
     if ( !blog )
-      blog = await this.blogModel.findOne({ title: term.toLowerCase().trim() });
+      blog = await this.blogModel.findOne({ slug: term });
 
     if ( !blog )
       throw new NotFoundException(`Blog with id, title or no "${ term }" not found`);
