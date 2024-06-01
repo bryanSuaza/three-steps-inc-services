@@ -16,7 +16,7 @@ export class Blog extends Document {
   author: string;
 
   @Prop({ index: true })
-  status: string[];
+  status: string;
 
   @Prop({
     unique: true,

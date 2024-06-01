@@ -96,7 +96,7 @@ export class BlogService {
 
     try {
       // Actualizamos
-      await this.blogModel.updateOne(payload);
+      await this.blogModel .findByIdAndUpdate(id, { $set: payload }, { new: true }).exec();
 
       return {
         ...blog.toJSON(),
