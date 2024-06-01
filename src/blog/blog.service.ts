@@ -65,7 +65,7 @@ export class BlogService {
   }
 
   async update( id: string, updateBlogDto: UpdateBlogDto, file?: Express.Multer.File ) {
-    const blog = await this.findOne( id );
+    const blog = await this.blogModel.findById( id );
 
     if ( !blog )
       throw new NotFoundException(`Blog whit id ${ id } not found`);
@@ -100,7 +100,7 @@ export class BlogService {
   }
 
   async remove( id: string ) {
-    const blog = await this.blogModel.findById( id );
+    const blog = await this.findOne( id );
 
     const { deletedCount } = await this.blogModel.deleteOne({ _id: id });
     
