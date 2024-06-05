@@ -3,9 +3,9 @@ import { ParseMongoIdPipe } from 'src/common/pipe/parse-mongo-id.pipe';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 
+import { fileFilter } from '../common/helpers';
 import { BlogService } from './blog.service';
 import { CreateBlogDto, UpdateBlogDto } from './dto';
-import { fileFilter } from './helpers';
 
 @Controller('blog')
 export class BlogController {

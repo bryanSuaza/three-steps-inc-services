@@ -8,6 +8,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { CustomersModule } from './customers/customers.module';
 import { StorageS3Module } from './storage-s3/storage-s3.module';
 import { BlogModule } from './blog/blog.module';
+import { BannersModule } from './banners/banners.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { BlogModule } from './blog/blog.module';
     CustomersModule,
     StorageS3Module,
     BlogModule,
+    BannersModule,
   ],
   controllers: [],
   providers: [],

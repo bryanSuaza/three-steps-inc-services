@@ -20,20 +20,19 @@ export class BlogService {
       const fileName = createBlogDto.title.split(' ').join('_');
       const mimetype = file.mimetype;
       const extension = file.originalname.split('.').pop();
-      const path = '/blog';
 
-      const urlImage = await this.storageS3Service.uploadFileS3( path, fileName, mimetype, extension, file.buffer );
+      const urlImage = await this.storageS3Service.uploadFileS3( '/blog', fileName, mimetype, extension, file.buffer );
       
       const blog = await this.blogModel.create({
         ...createBlogDto,
         slug: createBlogDto.title.split(' ').join('-').toLowerCase(),
-        image: urlImage
+        file: urlImage
       });
 
       return blog;
       
     } catch ( error ) {
-      this.handleExceptions( error ); 
+      this.handleExceptions( error );
     }
   }
 
@@ -79,19 +78,18 @@ export class BlogService {
       slug = newSlug;
     }
 
-    let payload = { ...updateBlogDto, slug, image: blog.image };
+    let payload = { ...updateBlogDto, slug, file: blog.file };
 
     if ( file ) {
-      await this.storageS3Service.removeFileS3( blog.image );
+      await this.storageS3Service.removeFileS3( blog.file );
 
       const fileName = updateBlogDto.title.split(' ').join('_');
       const mimetype = file.mimetype;
       const extension = file.originalname.split('.').pop();
-      const path = '/blog';
 
-      const url = await this.storageS3Service.uploadFileS3( path, fileName, mimetype, extension, file.buffer );
+      const url = await this.storageS3Service.uploadFileS3( '/blog', fileName, mimetype, extension, file.buffer );
       
-      payload = { ...payload, image: url }
+      payload = { ...payload, file: url }
     }
 
     try {
@@ -116,7 +114,7 @@ export class BlogService {
     if ( deletedCount === 0 )
       throw new BadRequestException(`Blog whit id "${ id }" not found`);
     else
-      await this.storageS3Service.removeFileS3(blog.image);
+      await this.storageS3Service.removeFileS3( blog.file );
     
     return { success: true };
   }

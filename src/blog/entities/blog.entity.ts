@@ -25,7 +25,7 @@ export class Blog extends Document {
   slug: string;
 
   @Prop({ index: true })
-  image: string;
+  file: string;
 
   @Prop()
   createAt: Date;
